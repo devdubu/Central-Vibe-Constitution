@@ -5,7 +5,9 @@
       "Bash(npm run build)",
       "Bash(node dist/index.js --help)",
       "Bash(node dist/index.js config --help)",
-      "Bash(node dist/index.js sync --help)"
+      "Bash(node dist/index.js sync --help)",
+      "Bash(npm whoami)",
+      "Bash(npm view central-vibe-constitution)"
     ]
   }
 }

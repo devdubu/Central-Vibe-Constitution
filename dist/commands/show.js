@@ -1,13 +1,16 @@
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { GLOBAL_CLAUDE_PATH } from '../lib/writer.js';
+import { detectScope } from '../lib/scope.js';
+import { getOutputPath } from '../lib/writer.js';
 export async function runShow() {
-    if (!existsSync(GLOBAL_CLAUDE_PATH)) {
-        console.log('No constitution found at ~/.claude/CLAUDE.md');
+    const scopeResult = detectScope();
+    const outputPath = getOutputPath(scopeResult);
+    if (!existsSync(outputPath)) {
+        console.log(`No constitution found at ${outputPath}`);
         console.log('Run `cvc sync` to fetch and apply your constitution.');
         return;
     }
-    const content = await readFile(GLOBAL_CLAUDE_PATH, 'utf-8');
+    const content = await readFile(outputPath, 'utf-8');
     console.log(content);
 }
 //# sourceMappingURL=show.js.map

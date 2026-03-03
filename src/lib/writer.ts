@@ -3,34 +3,44 @@ import { existsSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 import { createHash } from 'crypto';
-
-export const GLOBAL_CLAUDE_PATH = join(homedir(), '.claude', 'CLAUDE.md');
+import type { ScopeResult } from './scope.js';
 
 export function hashContent(content: string): string {
   return 'sha256:' + createHash('sha256').update(content).digest('hex');
 }
 
-export async function writeGlobal(content: string): Promise<void> {
-  await mkdir(join(homedir(), '.claude'), { recursive: true });
-  await writeFile(GLOBAL_CLAUDE_PATH, content, 'utf-8');
+/** Resolve the output CLAUDE.md path based on detected scope. */
+export function getOutputPath(scopeResult: ScopeResult): string {
+  if (scopeResult.scope === 'project' && scopeResult.projectRoot) {
+    return join(scopeResult.projectRoot, '.claude', 'CLAUDE.md');
+  }
+  return join(homedir(), '.claude', 'CLAUDE.md');
 }
 
-export async function writeProject(
+/**
+ * Write constitution content to the scope-resolved target path.
+ * If the file already exists and content differs, prompts the user for confirmation.
+ */
+export async function writeConstitution(
   content: string,
+  scopeResult: ScopeResult,
   confirm: (msg: string) => Promise<boolean>,
 ): Promise<boolean> {
-  const projectPath = join(process.cwd(), 'CLAUDE.md');
+  const outputPath = getOutputPath(scopeResult);
 
-  if (existsSync(projectPath)) {
-    const existing = await readFile(projectPath, 'utf-8');
+  if (existsSync(outputPath)) {
+    const existing = await readFile(outputPath, 'utf-8');
     if (existing !== content) {
       const ok = await confirm(
-        './CLAUDE.md already exists and differs from remote. Overwrite?',
+        `${outputPath} already exists and differs from remote. Overwrite?`,
       );
       if (!ok) return false;
+    } else {
+      return true; // already identical
     }
   }
 
-  await writeFile(projectPath, content, 'utf-8');
+  await mkdir(join(outputPath, '..'), { recursive: true });
+  await writeFile(outputPath, content, 'utf-8');
   return true;
 }

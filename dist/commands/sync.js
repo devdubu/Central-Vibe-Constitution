@@ -1,22 +1,32 @@
-import { readConfig, updateConfig } from '../lib/config.js';
+import { detectScope } from '../lib/scope.js';
+import { readConfig, updateConfig, DEFAULT_REMOTE_URL, } from '../lib/config.js';
 import { fetchConstitution } from '../lib/fetcher.js';
-import { writeGlobal, writeProject, hashContent } from '../lib/writer.js';
+import { writeConstitution, hashContent, getOutputPath } from '../lib/writer.js';
 import { promptConfirm } from '../lib/prompt.js';
 import { runInit } from './init.js';
-export async function runSync(options) {
-    const config = await readConfig();
-    if (!config.remote) {
-        console.log('No configuration found. Starting setup...\n');
-        await runInit();
-        return;
+export async function runSync() {
+    const scopeResult = detectScope();
+    const config = await readConfig(scopeResult);
+    // No remote configured at all → run interactive init
+    if (!config.remote && scopeResult.scope === 'global') {
+        const hasNoGlobalConfig = Object.keys(config).length === 0;
+        if (hasNoGlobalConfig) {
+            console.log('No configuration found. Starting setup...\n');
+            await runInit();
+            return;
+        }
     }
-    console.log(`Fetching from: ${config.remote}`);
+    const remote = config.remote ?? DEFAULT_REMOTE_URL;
+    const outputPath = getOutputPath(scopeResult);
+    console.log(`Scope:  ${scopeResult.scope}`);
+    console.log(`From:   ${remote}`);
+    console.log(`To:     ${outputPath}\n`);
     let content;
     try {
-        content = await fetchConstitution(config.remote, config.token);
+        content = await fetchConstitution(remote, config.token);
     }
     catch (err) {
-        console.error(`\nError: ${err.message}`);
+        console.error(`Error: ${err.message}`);
         process.exit(1);
     }
     const hash = hashContent(content);
@@ -24,19 +34,14 @@ export async function runSync(options) {
         console.log('✓ Already up to date.');
     }
     else {
-        await writeGlobal(content);
-        console.log('✓ Constitution synced to ~/.claude/CLAUDE.md');
-    }
-    if (options.project) {
-        const written = await writeProject(content, (msg) => promptConfirm(msg));
-        if (written) {
-            console.log('✓ Constitution synced to ./CLAUDE.md');
+        const written = await writeConstitution(content, scopeResult, (msg) => promptConfirm(msg));
+        if (!written) {
+            console.log('  Sync cancelled.');
+            return;
         }
-        else {
-            console.log('  Skipped project-level sync.');
-        }
+        console.log('✓ Constitution synced.');
     }
-    await updateConfig({
+    await updateConfig(scopeResult, {
         lastSynced: new Date().toISOString(),
         contentHash: hash,
     });

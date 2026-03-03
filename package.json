@@ -1,6 +1,6 @@
 {
-  "name": "central-vibe-constitution",
-  "version": "0.1.0",
+  "name": "@devdubu/central-vibe-constitution",
+  "version": "0.1.0-beta.1",
   "description": "CLI tool to manage and sync centralized AI coding constitutions (CLAUDE.md) to your Claude Code environment",
   "type": "module",
   "bin": {
@@ -14,7 +14,15 @@
     "dev": "tsx src/index.ts",
     "lint": "eslint src",
     "test": "vitest",
+    "prepublishOnly": "npm run build",
     "release": "npm version patch && git push --follow-tags"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devdubu/Central-Vibe-Constitution.git"
   },
   "keywords": [
     "claude",

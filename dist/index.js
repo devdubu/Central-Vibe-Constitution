@@ -16,17 +16,17 @@ program
     .action(runInit);
 program
     .command('sync')
-    .description('Fetch latest constitution and apply to ~/.claude/CLAUDE.md')
-    .option('--project', 'Also write to ./CLAUDE.md in the current directory')
-    .action((options) => runSync(options));
+    .description('Fetch latest constitution and write to scope-resolved CLAUDE.md ' +
+    '(auto-detects global or project scope via .cvcrc)')
+    .action(runSync);
 const configCmd = program
     .command('config')
     .description('Manage configuration');
 configCmd
     .command('set')
     .description('Set remote URL and/or auth token')
-    .option('--url <url>', 'Remote constitution URL')
-    .option('--token <token>', 'Auth token (use env:VAR_NAME to reference an env variable)')
+    .option('--url <url>', 'Remote constitution URL (GitHub blob URLs are auto-converted)')
+    .option('--token <token>', 'Auth token — global scope only (use env:VAR_NAME or CVC_TOKEN env var)')
     .action((options) => runConfigSet(options));
 configCmd
     .command('get')
@@ -34,11 +34,11 @@ configCmd
     .action(runConfigGet);
 program
     .command('status')
-    .description('Show sync status and configuration summary')
+    .description('Show scope, sync status, and configuration summary')
     .action(runStatus);
 program
     .command('show')
-    .description('Print the current active constitution from ~/.claude/CLAUDE.md')
+    .description('Print the current active constitution content')
     .action(runShow);
 program.parse();
 //# sourceMappingURL=index.js.map

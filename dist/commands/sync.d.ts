@@ -1,6 +1,2 @@
-interface SyncOptions {
-    project?: boolean;
-}
-export declare function runSync(options: SyncOptions): Promise<void>;
-export {};
+export declare function runSync(): Promise<void>;
 //# sourceMappingURL=sync.d.ts.map

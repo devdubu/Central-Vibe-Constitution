@@ -1,1 +1,1 @@
-{"version":3,"file":"fetcher.d.ts","sourceRoot":"","sources":["../../src/lib/fetcher.ts"],"names":[],"mappings":"AAGA,wBAAsB,iBAAiB,CACrC,GAAG,EAAE,MAAM,EACX,QAAQ,EAAE,MAAM,GAAG,SAAS,GAC3B,OAAO,CAAC,MAAM,CAAC,CAwBjB"}
+{"version":3,"file":"fetcher.d.ts","sourceRoot":"","sources":["../../src/lib/fetcher.ts"],"names":[],"mappings":"AAGA;;;;GAIG;AACH,wBAAgB,kBAAkB,CAAC,GAAG,EAAE,MAAM,GAAG;IAAE,GAAG,EAAE,MAAM,CAAC;IAAC,SAAS,EAAE,OAAO,CAAA;CAAE,CAWnF;AAED,wBAAsB,iBAAiB,CACrC,MAAM,EAAE,MAAM,EACd,QAAQ,EAAE,MAAM,GAAG,SAAS,GAC3B,OAAO,CAAC,MAAM,CAAC,CAyBjB"}
