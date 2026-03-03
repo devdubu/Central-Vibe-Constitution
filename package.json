@@ -1,0 +1,39 @@
+{
+  "name": "central-vibe-constitution",
+  "version": "0.1.0",
+  "description": "CLI tool to manage and sync centralized AI coding constitutions (CLAUDE.md) to your Claude Code environment",
+  "type": "module",
+  "bin": {
+    "cvc": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "lint": "eslint src",
+    "test": "vitest",
+    "release": "npm version patch && git push --follow-tags"
+  },
+  "keywords": [
+    "claude",
+    "ai",
+    "constitution",
+    "claude-code",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}
